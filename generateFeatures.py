@@ -94,6 +94,178 @@ def analyze_image(image_url):
     return analysis
 
 
+def append_instance(question, answerable, imageData, blurMetric):
+    question_pos_counts = pos_tag_text(question)
+    # print("Description is: " + imageData['description']['captions'][0]['text'])
+    desc_pos_counts = pos_tag_text(imageData['description']['captions'][0]['text'])
+    
+    feature_set['q_._count'].append(question_pos_counts['.'])
+    feature_set['q_ADJ_count'].append(question_pos_counts['ADJ'])
+    feature_set['q_ADP_count'].append(question_pos_counts['ADP'])
+    feature_set['q_ADV_count'].append(question_pos_counts['ADV'])
+    feature_set['q_CC_count'].append(question_pos_counts['CC'])
+    feature_set['q_CONJ_count'].append(question_pos_counts['CONJ'])
+    feature_set['q_DET_count'].append(question_pos_counts['DET'])
+    feature_set['q_IN_count'].append(question_pos_counts['IN'])
+    feature_set['q_JJ_count'].append(question_pos_counts['JJ'])
+    feature_set['q_NN_count'].append(question_pos_counts['NN'])
+    feature_set['q_NOUN_count'].append(question_pos_counts['NOUN'])
+    feature_set['q_NUM_count'].append(question_pos_counts['NUM'])
+    feature_set['q_PRON_count'].append(question_pos_counts['PRON'])
+    feature_set['q_PRT_count'].append(question_pos_counts['PRT'])
+    feature_set['q_RB_count'].append(question_pos_counts['RB'])
+    feature_set['q_VERB_count'].append(question_pos_counts['VERB'])
+    feature_set['q_X_count'].append(question_pos_counts['X'])
+
+    feature_set['desc_._count'].append(desc_pos_counts['.'])
+    feature_set['desc_ADJ_count'].append(desc_pos_counts['ADJ'])
+    feature_set['desc_ADP_count'].append(desc_pos_counts['ADP'])
+    feature_set['desc_ADV_count'].append(desc_pos_counts['ADV'])
+    feature_set['desc_CC_count'].append(desc_pos_counts['CC'])
+    feature_set['desc_CONJ_count'].append(desc_pos_counts['CONJ'])
+    feature_set['desc_DET_count'].append(desc_pos_counts['DET'])
+    feature_set['desc_IN_count'].append(desc_pos_counts['IN'])
+    feature_set['desc_JJ_count'].append(desc_pos_counts['JJ'])
+    feature_set['desc_NN_count'].append(desc_pos_counts['NN'])
+    feature_set['desc_NOUN_count'].append(desc_pos_counts['NOUN'])
+    feature_set['desc_NUM_count'].append(desc_pos_counts['NUM'])
+    feature_set['desc_PRON_count'].append(desc_pos_counts['PRON'])
+    feature_set['desc_PRT_count'].append(desc_pos_counts['PRT'])
+    feature_set['desc_RB_count'].append(desc_pos_counts['RB'])
+    feature_set['desc_VERB_count'].append(desc_pos_counts['VERB'])
+    feature_set['desc_X_count'].append(desc_pos_counts['X'])
+
+    feature_set['is_image_BnW'].append(int(imageData["color"]["isBwImg"]))
+    feature_set['image_bg_dom_color_BLACK'].append(0)
+    feature_set['image_bg_dom_color_BLUE'].append(0)
+    feature_set['image_bg_dom_color_BROWN'].append(0)
+    feature_set['image_bg_dom_color_GREY'].append(0)
+    feature_set['image_bg_dom_color_GREEN'].append(0)
+    feature_set['image_bg_dom_color_ORANGE'].append(0)
+    feature_set['image_bg_dom_color_PINK'].append(0)
+    feature_set['image_bg_dom_color_PURPLE'].append(0)
+    feature_set['image_bg_dom_color_RED'].append(0)
+    feature_set['image_bg_dom_color_TEAL'].append(0)
+    feature_set['image_bg_dom_color_WHITE'].append(0)
+    feature_set['image_bg_dom_color_YELLOW'].append(0)
+    feature_set['image_fg_dom_color_BLACK'].append(0)
+    feature_set['image_fg_dom_color_BLUE'].append(0)
+    feature_set['image_fg_dom_color_BROWN'].append(0)
+    feature_set['image_fg_dom_color_GREY'].append(0)
+    feature_set['image_fg_dom_color_GREEN'].append(0)
+    feature_set['image_fg_dom_color_ORANGE'].append(0)
+    feature_set['image_fg_dom_color_PINK'].append(0)
+    feature_set['image_fg_dom_color_PURPLE'].append(0)
+    feature_set['image_fg_dom_color_RED'].append(0)
+    feature_set['image_fg_dom_color_TEAL'].append(0)
+    feature_set['image_fg_dom_color_WHITE'].append(0)
+    feature_set['image_fg_dom_color_YELLOW'].append(0)
+
+
+    if (imageData["color"]["dominantColorBackground"] == "Black"):
+        feature_set['image_bg_dom_color_BLACK'] = feature_set['image_bg_dom_color_BLACK'][:-1] + [1]
+    elif (imageData["color"]["dominantColorBackground"] == "Blue"):
+        feature_set['image_bg_dom_color_BLUE'] = feature_set['image_bg_dom_color_BLUE'][:-1] + [1]
+    elif (imageData["color"]["dominantColorBackground"] == "Brown"):
+        feature_set['image_bg_dom_color_BROWN'] = feature_set['image_bg_dom_color_BROWN'][:-1] + [1]
+    elif (imageData["color"]["dominantColorBackground"] == "Grey"):
+        feature_set['image_bg_dom_color_GREY'] = feature_set['image_bg_dom_color_GREY'][:-1] + [1]
+    elif (imageData["color"]["dominantColorBackground"] == "Green"):
+        feature_set['image_bg_dom_color_GREEN'] = feature_set['image_bg_dom_color_GREEN'][:-1] + [1]
+    elif (imageData["color"]["dominantColorBackground"] == "Orange"):
+        feature_set['image_bg_dom_color_ORANGE'] = feature_set['image_bg_dom_color_ORANGE'][:-1] + [1]
+    elif (imageData["color"]["dominantColorBackground"] == "Pink"):
+        feature_set['image_bg_dom_color_PINK'] = feature_set['image_bg_dom_color_PINK'][:-1] + [1]
+    elif (imageData["color"]["dominantColorBackground"] == "Purple"):
+        feature_set['image_bg_dom_color_PURPLE'] = feature_set['image_bg_dom_color_PURPLE'][:-1] + [1]
+    elif (imageData["color"]["dominantColorBackground"] == "Red"):
+        feature_set['image_bg_dom_color_RED'] = feature_set['image_bg_dom_color_RED'][:-1] + [1]
+    elif (imageData["color"]["dominantColorBackground"] == "Teal"):
+        feature_set['image_bg_dom_color_TEAL'] = feature_set['image_bg_dom_color_TEAL'][:-1] + [1]
+    elif (imageData["color"]["dominantColorBackground"] == "White"):
+        feature_set['image_bg_dom_color_WHITE'] = feature_set['image_bg_dom_color_WHITE'][:-1] + [1]
+    elif (imageData["color"]["dominantColorBackground"] == "Yellow"):
+        feature_set['image_bg_dom_color_YELLOW'] = feature_set['image_bg_dom_color_YELLOW'][:-1] + [1]
+    else:
+        print("UNKNOWN COLOR BG")
+
+    if (imageData["color"]["dominantColorForeground"] == "Black"):
+        feature_set['image_fg_dom_color_BLACK'] = feature_set['image_fg_dom_color_BLACK'][:-1] + [1]
+    elif (imageData["color"]["dominantColorForeground"] == "Blue"):
+        feature_set['image_fg_dom_color_BLUE'] = feature_set['image_fg_dom_color_BLUE'][:-1] + [1]
+    elif (imageData["color"]["dominantColorForeground"] == "Brown"):
+        feature_set['image_fg_dom_color_BROWN'] = feature_set['image_fg_dom_color_BROWN'][:-1] + [1]
+    elif (imageData["color"]["dominantColorForeground"] == "Grey"):
+        feature_set['image_fg_dom_color_GREY'] = feature_set['image_fg_dom_color_GREY'][:-1] + [1]
+    elif (imageData["color"]["dominantColorForeground"] == "Green"):
+        feature_set['image_fg_dom_color_GREEN'] = feature_set['image_fg_dom_color_GREEN'][:-1] + [1]
+    elif (imageData["color"]["dominantColorForeground"] == "Orange"):
+        feature_set['image_fg_dom_color_ORANGE'] = feature_set['image_fg_dom_color_ORANGE'][:-1] + [1]
+    elif (imageData["color"]["dominantColorForeground"] == "Pink"):
+        feature_set['image_fg_dom_color_PINK'] = feature_set['image_fg_dom_color_PINK'][:-1] + [1]
+    elif (imageData["color"]["dominantColorForeground"] == "Purple"):
+        feature_set['image_fg_dom_color_PURPLE'] = feature_set['image_fg_dom_color_PURPLE'][:-1] + [1]
+    elif (imageData["color"]["dominantColorForeground"] == "Red"):
+        feature_set['image_fg_dom_color_RED'] = feature_set['image_fg_dom_color_RED'][:-1] + [1]
+    elif (imageData["color"]["dominantColorForeground"] == "Teal"):
+        feature_set['image_fg_dom_color_TEAL'] = feature_set['image_fg_dom_color_TEAL'][:-1] + [1]
+    elif (imageData["color"]["dominantColorForeground"] == "White"):
+        feature_set['image_fg_dom_color_WHITE'] = feature_set['image_fg_dom_color_WHITE'][:-1] + [1]
+    elif (imageData["color"]["dominantColorForeground"] == "Yellow"):
+        feature_set['image_fg_dom_color_YELLOW'] = feature_set['image_fg_dom_color_YELLOW'][:-1] + [1]
+    else:
+        print("UNKNOWN COLOR FG")    
+
+    feature_set['q_string_color_BLACK'].append(0)
+    feature_set['q_string_color_BLUE'].append(0)
+    feature_set['q_string_color_BROWN'].append(0)
+    feature_set['q_string_color_GREY'].append(0)
+    feature_set['q_string_color_GREEN'].append(0)
+    feature_set['q_string_color_ORANGE'].append(0)
+    feature_set['q_string_color_PINK'].append(0)
+    feature_set['q_string_color_PURPLE'].append(0)
+    feature_set['q_string_color_RED'].append(0)
+    feature_set['q_string_color_TEAL'].append(0)
+    feature_set['q_string_color_WHITE'].append(0)
+    feature_set['q_string_color_YELLOW'].append(0)
+
+    if ("BLACK" in question.upper()):
+        feature_set['q_string_color_BLACK'] = feature_set['q_string_color_BLACK'][:-1] + [1]
+    if ("BLUE" in question.upper()):
+        feature_set['q_string_color_BLUE'] = feature_set['q_string_color_BLUE'][:-1] + [1]
+    if ("BROWN" in question.upper()):
+        feature_set['q_string_color_BROWN'] = feature_set['q_string_color_BROWN'][:-1] + [1]
+    if ("GREY" in question.upper()):
+        feature_set['q_string_color_GREY'] = feature_set['q_string_color_GREY'][:-1] + [1]
+    if ("GREEN" in question.upper()):
+        feature_set['q_string_color_GREEN'] = feature_set['q_string_color_GREEN'][:-1] + [1]
+    if ("ORANGE" in question.upper()):
+        feature_set['q_string_color_ORANGE'] = feature_set['q_string_color_ORANGE'][:-1] + [1]
+    if ("PINK" in question.upper()):
+        feature_set['q_string_color_PINK'] = feature_set['q_string_color_PINK'][:-1] + [1]
+    if ("PURPLE" in question.upper()):
+        feature_set['q_string_color_PURPLE'] = feature_set['q_string_color_PURPLE'][:-1] + [1]
+    if ("RED" in question.upper()):
+        feature_set['q_string_color_RED'] = feature_set['q_string_color_RED'][:-1] + [1]
+    if ("TEAL" in question.upper()):
+        feature_set['q_string_color_TEAL'] = feature_set['q_string_color_TEAL'][:-1] + [1]
+    if ("WHITE" in question.upper()):
+        feature_set['q_string_color_WHITE'] = feature_set['q_string_color_WHITE'][:-1] + [1]
+    if ("YELLOW" in question.upper()):
+        feature_set['q_string_color_YELLOW'] = feature_set['q_string_color_YELLOW'][:-1] + [1]
+
+    feature_set['image_has_faces'].append(int(len(imageData["faces"])))
+    feature_set['image_num_faces'].append(len(imageData["faces"]))
+
+    feature_set['image_has_text'].append(0)
+    for item in imageData['categories']:
+        if item['name'] == "text_":
+            feature_set['image_has_text'] = feature_set['image_has_text'][:-1] + [1]
+
+    feature_set['blurriness'].append(blurMetric)
+
+    target_set['target'].append(answerable)
+
 '''
 (ex)
 
@@ -111,32 +283,135 @@ feature_set = {
 4   4   5        5
 
 '''
+feature_set = {
+    'q_._count' : [],
+    'q_ADJ_count': [],
+    'q_ADP_count': [],
+    'q_ADV_count': [],
+    'q_CC_count': [],
+    'q_CONJ_count': [],
+    'q_DET_count': [],
+    'q_IN_count': [],
+    'q_JJ_count': [],
+    'q_NN_count': [],
+    'q_NOUN_count': [],
+    'q_NUM_count': [],
+    'q_PRON_count': [],
+    'q_PRT_count': [],
+    'q_RB_count': [],
+    'q_VERB_count': [],
+    'q_X_count': [],
+
+    'desc_._count' : [],
+    'desc_ADJ_count': [],
+    'desc_ADP_count': [],
+    'desc_ADV_count': [],
+    'desc_CC_count': [],
+    'desc_CONJ_count': [],
+    'desc_DET_count': [],
+    'desc_IN_count': [],
+    'desc_JJ_count': [],
+    'desc_NN_count': [],
+    'desc_NOUN_count': [],
+    'desc_NUM_count': [],
+    'desc_PRON_count': [],
+    'desc_PRT_count': [],
+    'desc_RB_count': [],
+    'desc_VERB_count': [],
+    'desc_X_count': [],
+
+    'is_image_BnW' : [],
+    'image_bg_dom_color_BLACK' : [],
+    'image_bg_dom_color_BLUE' : [],
+    'image_bg_dom_color_BROWN' : [],
+    'image_bg_dom_color_GREY' : [],
+    'image_bg_dom_color_GREEN' : [],
+    'image_bg_dom_color_ORANGE' : [],
+    'image_bg_dom_color_PINK' : [],
+    'image_bg_dom_color_PURPLE' : [],
+    'image_bg_dom_color_RED' : [],
+    'image_bg_dom_color_TEAL' : [],
+    'image_bg_dom_color_WHITE' : [],
+    'image_bg_dom_color_YELLOW' : [],
+
+    'image_fg_dom_color_BLACK' : [],
+    'image_fg_dom_color_BLUE' : [],
+    'image_fg_dom_color_BROWN' : [],
+    'image_fg_dom_color_GREY' : [],
+    'image_fg_dom_color_GREEN' : [],
+    'image_fg_dom_color_ORANGE' : [],
+    'image_fg_dom_color_PINK' : [],
+    'image_fg_dom_color_PURPLE' : [],
+    'image_fg_dom_color_RED' : [],
+    'image_fg_dom_color_TEAL' : [],
+    'image_fg_dom_color_WHITE' : [],
+    'image_fg_dom_color_YELLOW' : [],     
+
+    'q_string_color_BLACK' : [],
+    'q_string_color_BLUE' : [],
+    'q_string_color_BROWN' : [],
+    'q_string_color_GREY' : [],
+    'q_string_color_GREEN' : [],
+    'q_string_color_ORANGE' : [],
+    'q_string_color_PINK' : [],
+    'q_string_color_PURPLE' : [],
+    'q_string_color_RED' : [],
+    'q_string_color_TEAL' : [],
+    'q_string_color_WHITE' : [],
+    'q_string_color_YELLOW' : [],
+
+    'image_has_faces' : [],
+    'image_num_faces' : [],
+
+    'image_has_text' : [],
+    'blurriness' : [] 
+}
+
+target_set = {
+    'target' : []
+}
+
+# nltk.download('tagsets')
+# text = 'And now for something completely different'
+# pos_counts = pos_tag_text(text)
+# pprint(pos_counts)
+
 def main():
     print("Starting main")
-    # trainingData = json.load(open('data/train.json'))
+    trainingData = json.load(open('data/train.json'))
     # pprint(trainingData[2])
     
-    # image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_train_000000000003.jpg"
-    # image = skimage.io.imread(image_url)
-    # imgAnalysis = analyze_image(image_url)
-    # pprint(imgAnalysis)
+    for ind in range(0,10):
+        image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_train_" + str(ind).zfill(12) + ".jpg"
+        # image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_train_000000000005.jpg"
+        print("Starting " + image_url + "...")
+        question = trainingData[ind]['question']
+        answer = trainingData[ind]['answerable']
+        # print("Q: " + question)
+        # print("Answerable? " + str(answer))
 
-    # print("\n --- FEATURES --- \n")
+        image = skimage.io.imread(image_url)
+        imgAnalysis = analyze_image(image_url)
+        # pprint(imgAnalysis)
 
-    # features = extract_features(imgAnalysis)
-    # pprint(features)
+        # print("\n --- FEATURES --- \n")
+
+        # features = extract_features(imgAnalysis)
+        # pprint(features)
+
+        blur = detect_blur(image)
+        # print("\n\nBlurriness index: " + str(blur))
+
+        append_instance(question, answer, imgAnalysis, blur)
+        # pprint(feature_set)
 
     # print("\n --- DATA FRAME --- \n")
 
-    # df = DataFrame(data=features, index=[0])
+    features_df = DataFrame(data=feature_set)
+    target_df = DataFrame(data=target_set)
     # display(df)
-
-    # print("\n\nBlurriness index: " + str(detect_blur(image)))
-
-    # nltk.download('tagsets')
-    text = 'And now for something completely different'
-    pos_counts = pos_tag_text(text)
-    pprint(pos_counts)
+    features_df.to_csv("feature_set.csv")
+    target_df.to_csv("target.csv")    
 
 if __name__ == '__main__':
     main()
