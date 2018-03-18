@@ -9,10 +9,20 @@ import json
 from pprint import pprint
 import requests
 # import matplotlib.pyplot as plt
+from pandas import DataFrame
+from IPython.display import display
+import cv2
 from myAzureApiKeys import txt_analysis_key, cv_key
 
 vision_base_url = "https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/"
 vision_analyze_url = vision_base_url + "analyze?"
+
+# Followed technique found here: https://www.pyimagesearch.com/2015/09/07/blur-detection-with-opencv/
+def detect_blur(image):
+    correctedImage = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    gray = cv2.cvtColor(correctedImage, cv2.COLOR_BGR2GRAY)
+    varLap = cv2.Laplacian(gray, cv2.CV_64F).var()
+    return varLap
 
 # improved feature extraction using one-hot encodings, feature binarization, and improved feature selection
 def extract_features(data):
@@ -36,7 +46,7 @@ def extract_features(data):
 
 # evaluate an image using the Microsoft Azure Cognitive Services Computer Vision API
 def analyze_image(image_url):
-    image = skimage.io.imread(image_url)
+    # image = skimage.io.imread(image_url)
     # plt.imshow(image)
     # plt.axis("off")
     # plt.show()
@@ -50,12 +60,31 @@ def analyze_image(image_url):
     analysis = response.json()
     return analysis
 
+
+'''
+(ex)
+
+feature_set = {
+"one" : [0,1,2,3,4],
+"two" : [7,3,5,3,5],
+"three" : [838,465,23,56,5]
+}
+
+    one three   two
+0   0   838      7
+1   1   465      3
+2   2   23       5
+3   3   56       3
+4   4   5        5
+
+'''
 def main():
     print("Starting main")
     # trainingData = json.load(open('data/train.json'))
     # pprint(trainingData[2])
     
-    image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_train_000000000000.jpg"
+    image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_train_000000000003.jpg"
+    image = skimage.io.imread(image_url)
     imgAnalysis = analyze_image(image_url)
     pprint(imgAnalysis)
 
@@ -63,6 +92,13 @@ def main():
 
     features = extract_features(imgAnalysis)
     pprint(features)
+
+    print("\n --- DATA FRAME --- \n")
+
+    df = DataFrame(data=features, index=[0])
+    display(df)
+
+    print("\n\nBlurriness index: " + str(detect_blur(image)))
 
 if __name__ == '__main__':
     main()
