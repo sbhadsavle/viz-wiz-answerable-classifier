@@ -12,17 +12,50 @@ import requests
 from pandas import DataFrame
 from IPython.display import display
 import cv2
+import nltk
 from myAzureApiKeys import txt_analysis_key, cv_key
 
 vision_base_url = "https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/"
 vision_analyze_url = vision_base_url + "analyze?"
 
 # Followed technique found here: https://www.pyimagesearch.com/2015/09/07/blur-detection-with-opencv/
+# and https://www.pyimagesearch.com/2015/03/02/convert-url-to-image-with-python-and-opencv/
 def detect_blur(image):
     correctedImage = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     gray = cv2.cvtColor(correctedImage, cv2.COLOR_BGR2GRAY)
     varLap = cv2.Laplacian(gray, cv2.CV_64F).var()
     return varLap
+
+# conduct POS tagging and return counts of POS types
+def pos_tag_text(text):
+    text = nltk.word_tokenize(text)
+    tags = nltk.pos_tag(text)
+    frequencies = nltk.FreqDist(tag for (word, tag) in tags)
+    
+    tag_counts = {
+        '.': 0,
+        'ADJ': 0,
+        'ADP': 0,
+        'ADV': 0,
+        'CC': 0,
+        'CONJ': 0,
+        'DET': 0,
+        'IN': 0,
+        'JJ': 0,
+        'NN': 0,
+        'NOUN': 0,
+        'NUM': 0,
+        'PRON': 0,
+        'PRT': 0,
+        'RB': 0,
+        'VERB': 0,
+        'X': 0
+    }
+    
+    for tag, count in frequencies.most_common():
+        tag_counts[tag] = count
+        
+    return tag_counts
 
 # improved feature extraction using one-hot encodings, feature binarization, and improved feature selection
 def extract_features(data):
@@ -83,22 +116,27 @@ def main():
     # trainingData = json.load(open('data/train.json'))
     # pprint(trainingData[2])
     
-    image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_train_000000000003.jpg"
-    image = skimage.io.imread(image_url)
-    imgAnalysis = analyze_image(image_url)
-    pprint(imgAnalysis)
+    # image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_train_000000000003.jpg"
+    # image = skimage.io.imread(image_url)
+    # imgAnalysis = analyze_image(image_url)
+    # pprint(imgAnalysis)
 
-    print("\n --- FEATURES --- \n")
+    # print("\n --- FEATURES --- \n")
 
-    features = extract_features(imgAnalysis)
-    pprint(features)
+    # features = extract_features(imgAnalysis)
+    # pprint(features)
 
-    print("\n --- DATA FRAME --- \n")
+    # print("\n --- DATA FRAME --- \n")
 
-    df = DataFrame(data=features, index=[0])
-    display(df)
+    # df = DataFrame(data=features, index=[0])
+    # display(df)
 
-    print("\n\nBlurriness index: " + str(detect_blur(image)))
+    # print("\n\nBlurriness index: " + str(detect_blur(image)))
+
+    # nltk.download('tagsets')
+    text = 'And now for something completely different'
+    pos_counts = pos_tag_text(text)
+    pprint(pos_counts)
 
 if __name__ == '__main__':
     main()
