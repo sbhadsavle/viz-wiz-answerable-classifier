@@ -421,17 +421,40 @@ target_set = {
 # pos_counts = pos_tag_text(text)
 # pprint(pos_counts)
 
+'''
+MODE = 0 is training
+MODE = 1 is validation
+MODE = 2 is testing
+'''
+MODE = 2 
+VALIDATION_IND_OFFSET = 28000
+TEST_IND_OFFSET = 20000
+
 def main():
     print("Starting main")
-    trainingData = json.load(open('data/train.json'))
-    # pprint(trainingData[2])
+    imageDataJson = None
     
-    for ind in range(0,300):
-        image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_train_" + str(ind).zfill(12) + ".jpg"
+    for ind in range(0,30):
+        image_url = None
+        if (MODE == 0):
+            image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_train_" + str(ind).zfill(12) + ".jpg"
+            imageDataJson = json.load(open('data/train.json'))
+        elif (MODE == 1):
+            newInd = ind + VALIDATION_IND_OFFSET
+            image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_val_" + str(newInd).zfill(12) + ".jpg"
+            imageDataJson = json.load(open('data/val.json'))
+        else: 
+            newInd = ind + TEST_IND_OFFSET
+            image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_test_" + str(newInd).zfill(12) + ".jpg"
+            imageDataJson = json.load(open('data/test.json'))
         # image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_train_000000000005.jpg"
         print("Starting " + image_url + "...")
-        question = trainingData[ind]['question']
-        answer = trainingData[ind]['answerable']
+        question = imageDataJson[ind]['question']
+        answer = None
+        if (MODE == 0 or MODE == 1):
+            answer = imageDataJson[ind]['answerable']
+        else:
+            answer = 0 # dummy answer
         # print("Q: " + question)
         # print("Answerable? " + str(answer))
 
@@ -450,13 +473,15 @@ def main():
         append_instance(question, answer, imgAnalysis, blur)
         # pprint(feature_set)
 
+        features_df = DataFrame(data=feature_set)
+        target_df = DataFrame(data=target_set)
+        # display(df)
+        features_df.to_csv("feature_set.csv")
+        target_df.to_csv("target.csv") 
+
     # print("\n --- DATA FRAME --- \n")
 
-    features_df = DataFrame(data=feature_set)
-    target_df = DataFrame(data=target_set)
-    # display(df)
-    features_df.to_csv("feature_set.csv")
-    target_df.to_csv("target.csv")    
+   
 
 if __name__ == '__main__':
     main()
