@@ -426,7 +426,7 @@ def main():
     trainingData = json.load(open('data/train.json'))
     # pprint(trainingData[2])
     
-    for ind in range(0,10):
+    for ind in range(0,300):
         image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_train_" + str(ind).zfill(12) + ".jpg"
         # image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_train_000000000005.jpg"
         print("Starting " + image_url + "...")
