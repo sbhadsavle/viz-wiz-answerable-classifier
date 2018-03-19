@@ -18,6 +18,10 @@ from myAzureApiKeys import txt_analysis_key, cv_key
 vision_base_url = "https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/"
 vision_analyze_url = vision_base_url + "analyze?"
 
+text_analytics_base_url = "https://westcentralus.api.cognitive.microsoft.com/text/analytics/v2.0/"
+sentiment_api_url = text_analytics_base_url + "sentiment"
+key_phrase_api_url = text_analytics_base_url + "keyPhrases"
+
 # Followed technique found here: https://www.pyimagesearch.com/2015/09/07/blur-detection-with-opencv/
 # and https://www.pyimagesearch.com/2015/03/02/convert-url-to-image-with-python-and-opencv/
 def detect_blur(image):
@@ -76,6 +80,37 @@ def extract_features(data):
         "is_dominant_color_background_black" : int(data["color"]["dominantColorBackground"] == "Black"),
         "is_dominant_color_foreground_black" : int(data["color"]["dominantColorForeground"] == "Black")
     }
+
+def get_sentiments(question):
+    documents = []
+    documents.append({
+        'id': 0,
+        'text': question
+    })
+
+    param = {'documents': documents}
+    headers   = {"Ocp-Apim-Subscription-Key": txt_analysis_key}
+    response  = requests.post(sentiment_api_url, headers=headers, json=param)
+    sentimentJson = response.json()
+    # pprint(sentiment)
+    #print(sentimentJson['documents'][0]['score'])
+    return sentimentJson['documents'][0]['score']
+
+def get_num_key_phrases(text):
+    documents = []
+    documents.append({
+        'id': 0,
+        'text': text
+    })
+
+    param = {'documents': documents}
+    headers = {"Ocp-Apim-Subscription-Key": txt_analysis_key}
+    response = requests.post(key_phrase_api_url, headers=headers, json=param)
+    keyPhrasesJson = response.json()
+    # pprint(keyPhrasesJson)
+    numKeyPhrases = len(keyPhrasesJson['documents'][0]['keyPhrases'])
+    # print(numKeyPhrases)
+    return numKeyPhrases
 
 # evaluate an image using the Microsoft Azure Cognitive Services Computer Vision API
 def analyze_image(image_url):
@@ -264,6 +299,12 @@ def append_instance(question, answerable, imageData, blurMetric):
 
     feature_set['blurriness'].append(blurMetric)
 
+    feature_set['q_sentiment'].append(get_sentiments(question))
+    feature_set['q_num_key_phrases'].append(get_num_key_phrases(question))
+    feature_set['desc_num_key_phrases'].append(get_num_key_phrases(imageData['description']['captions'][0]['text']))
+    # 'q_num_key_phrases' : [],
+    # 'desc_num_key_phrases' : []
+
     target_set['target'].append(answerable)
 
 '''
@@ -364,7 +405,11 @@ feature_set = {
     'image_num_faces' : [],
 
     'image_has_text' : [],
-    'blurriness' : [] 
+    'blurriness' : [],
+
+    'q_sentiment' : [],
+    'q_num_key_phrases' : [],
+    'desc_num_key_phrases' : []
 }
 
 target_set = {
@@ -415,3 +460,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+    # get_sentiments("This is a fantastic question, but what color is that shirt?")
+    # get_num_key_phrases("My very eager mother was keen to eat pizza with me and my friend.")
