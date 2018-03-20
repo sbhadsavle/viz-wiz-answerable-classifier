@@ -426,7 +426,7 @@ MODE = 0 is training
 MODE = 1 is validation
 MODE = 2 is testing
 '''
-MODE = 2 
+MODE = 1 
 VALIDATION_IND_OFFSET = 28000
 TEST_IND_OFFSET = 20000
 
@@ -434,7 +434,7 @@ def main():
     print("Starting main")
     imageDataJson = None
     
-    for ind in range(0,30):
+    for ind in range(0,100):
         image_url = None
         if (MODE == 0):
             image_url = "https://cvc.ischool.utexas.edu/~dannag/VizWiz/Images/VizWiz_train_" + str(ind).zfill(12) + ".jpg"
